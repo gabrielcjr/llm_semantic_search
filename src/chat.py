@@ -1,42 +1,42 @@
-from search import search_prompt
-from langchain.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
-from dotenv import load_dotenv
 import os
-
-
-# similarity_search_with_score(query, k=10)
+from dotenv import load_dotenv
+import anthropic
+from search import build_prompt
 
 load_dotenv()
 
+client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+def chat(question: str) -> str:
+    """Send question to Claude with RAG context."""
+    prompt = build_prompt(question)
+
+    message = client.messages.create(
+        model=os.getenv("ANTHROPIC_MODEL"),
+        max_tokens=1024,
+        temperature=0,
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return message.content[0].text
 
 
+def main():
+    print("RAG Chat with Claude (type 'exit' to quit)")
+    print("-" * 50)
+
+    while True:
+        question = input("\nQuestion: ").strip()
+        if question.lower() in ("sair", "exit", "quit"):
+            print("Goodbye!")
+            break
+        if not question:
+            continue
+
+        response = chat(question)
+        print(f"\nAnswer: {response}")
 
 
-
-
-
-model = ChatGoogleGenerativeAI(model=os.getenv("GOOGLE_LLM_MODEL"), temperature=0.5)
-
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are a helpful assistant that answers questions based on the provided context. Return 'Não tenho informações necessárias para responder sua pergunta' if a question is out of the context."),
-    ("user", "{input}"),
-])
-
-chat_prompt = ChatPromptTemplate([system, user])
-
-messages = chat_prompt.format_messages(style="formal", )
-
-print(message)
-
-# def main():
-#     chain = search_prompt()
-
-#     if not chain:
-#         print("Não foi possível iniciar o chat. Verifique os erros de inicialização.")
-#         return
-    
-#     pass
-
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

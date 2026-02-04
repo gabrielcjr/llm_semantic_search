@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_postgres import PGVector
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 
 load_dotenv()
@@ -13,7 +13,6 @@ for k in (
     "PDF_PATH",
     "PGVECTOR_URL",
     "PG_VECTOR_COLLECTION_NAME",
-    "GOOGLE_API_KEY",
 ):
     if not os.getenv(k):
         raise RuntimeError(f"Missing environment variable: {k}")
@@ -40,9 +39,9 @@ enriched = [
 
 ids = [f"doc-{i}" for i in range(len(enriched))]
 
-embeddings = GoogleGenerativeAIEmbeddings(
-    model=os.getenv("GOOGLE_EMBEDDING_MODEL"),
-    api_key=os.getenv("GOOGLE_API_KEY"),
+embeddings = HuggingFaceEmbeddings(
+    model_name=os.getenv("EMBEDDING_MODEL"),
+    model_kwargs={"device": "cpu"},
 )
 
 store = PGVector(
@@ -54,6 +53,7 @@ store = PGVector(
 
 def ingest_pdf():
     store.add_documents(enriched, ids=ids)
+    print(f"Ingestion completed successfully! {len(enriched)} chunks stored.")
 
 if __name__ == "__main__":
     ingest_pdf()
