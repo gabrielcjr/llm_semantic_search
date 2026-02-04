@@ -2,6 +2,10 @@
 
 Semantic search system with RAG (Retrieval-Augmented Generation) using Anthropic's Claude.
 
+## Important info about Google and OpenAI limitation on the requirements:
+
+- Currently I have a paid account on Claude, for that reason I did not use other AI providers. Please, consider the solution with Claude instead of others, as it is listed on requirements of the challenge.
+
 ## Prerequisites
 
 - Python 3.10+
