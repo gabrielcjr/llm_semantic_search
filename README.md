@@ -17,7 +17,7 @@ This project follows the classic RAG architecture, separated into two pipelines:
 ```mermaid
 flowchart TD
     %% Ingestion Pipeline
-    subgraph Ingestion Pipeline
+    subgraph ingestion["Ingestion Pipeline"]
         A[PDF Document] --> B[PyPDFLoader]
         B --> C[RecursiveCharacterTextSplitter]
         C --> D[HuggingFace Embeddings: all-MiniLM-L6-v2]
@@ -25,7 +25,7 @@ flowchart TD
     end
 
     %% Inference Pipeline
-    subgraph Inference & RAG Pipeline
+    subgraph inference["Inference & RAG Pipeline"]
         F[User Question] --> G[Embed Question]
         G --> H[Vector Similarity Search: PGVector]
         E --> H
@@ -36,8 +36,8 @@ flowchart TD
         K --> L[Hallucination-Free Answer]
     end
     
-    style Ingestion Pipeline fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style Inference & RAG Pipeline fill:#eef6ff,stroke:#333,stroke-width:2px
+    style ingestion fill:#f9f9f9,stroke:#333,stroke-width:2px
+    style inference fill:#eef6ff,stroke:#333,stroke-width:2px
 ```
 
 ---
